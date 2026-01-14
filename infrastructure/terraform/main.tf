@@ -39,7 +39,7 @@ resource "aws_subnet" "public" {
 resource "aws_db_instance" "postgres" {
   identifier        = "nnit-vpn-db"
   engine            = "postgres"
-  engine_version    = "16"
+  engine_version    = "16.1"
   instance_class    = var.db_instance_class
   allocated_storage = 100
   storage_encrypted = true

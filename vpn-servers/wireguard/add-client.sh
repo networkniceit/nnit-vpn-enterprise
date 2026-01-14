@@ -9,7 +9,22 @@ if [ -z "$1" ]; then
 fi
 
 CLIENT_NAME=$1
-CLIENT_IP="10.8.0.$(($(wg show wg0 | grep -c peer) + 2))"
+
+# Check if WireGuard interface exists
+if ! wg show wg0 &>/dev/null; then
+    echo "Error: WireGuard interface wg0 not found. Is WireGuard running?"
+    exit 1
+fi
+
+# Calculate client IP based on existing peers
+PEER_COUNT=$(wg show wg0 | grep -c peer || echo 0)
+CLIENT_IP="10.8.0.$((PEER_COUNT + 2))"
+
+# Get server public key
+if [ ! -f /etc/wireguard/publickey ]; then
+    echo "Error: Server public key not found. Run install.sh first."
+    exit 1
+fi
 SERVER_PUBLIC_KEY=$(cat /etc/wireguard/publickey)
 SERVER_ENDPOINT="YOUR_SERVER_IP:51820"
 

@@ -78,8 +78,17 @@ ufw allow 1194/udp
 ufw allow OpenSSH
 ufw --force enable
 
+# Detect default network interface
+DEFAULT_IFACE=$(ip route | grep '^default' | awk '{print $5}' | head -n1)
+if [ -z "$DEFAULT_IFACE" ]; then
+    echo "Warning: Could not detect default network interface. Please configure NAT manually."
+    DEFAULT_IFACE="eth0"
+fi
+
+echo "Using network interface: $DEFAULT_IFACE"
+
 # Configure NAT
-iptables -t nat -A POSTROUTING -s 10.8.0.0/24 -o eth0 -j MASQUERADE
+iptables -t nat -A POSTROUTING -s 10.8.0.0/24 -o "$DEFAULT_IFACE" -j MASQUERADE
 
 # Enable and start OpenVPN
 systemctl enable openvpn@server

@@ -13,6 +13,10 @@ echo "Generating server keys..."
 SERVER_PRIVATE_KEY=$(wg genkey)
 SERVER_PUBLIC_KEY=$(echo "$SERVER_PRIVATE_KEY" | wg pubkey)
 
+# Save public key for later reference
+echo "$SERVER_PUBLIC_KEY" > /etc/wireguard/publickey
+chmod 600 /etc/wireguard/publickey
+
 # Create WireGuard configuration directory
 mkdir -p /etc/wireguard
 
@@ -47,6 +51,8 @@ systemctl start wg-quick@wg0
 echo "WireGuard installation complete!"
 echo "Server Public Key: $SERVER_PUBLIC_KEY"
 echo ""
-echo "Save these keys securely:"
-echo "Private Key: $SERVER_PRIVATE_KEY"
-echo "Public Key: $SERVER_PUBLIC_KEY"
+echo "IMPORTANT: Server keys have been saved to /etc/wireguard/wg0.conf"
+echo "Keep the private key secure and never share it!"
+echo ""
+echo "To view your server public key later:"
+echo "  sudo cat /etc/wireguard/publickey"
