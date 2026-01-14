@@ -1,23 +1,34 @@
-# NetworkNiceIT Tec VPN Enterprise Edition
+# NNIT VPN Enterprise Edition
 
 ![Version](https://img.shields.io/badge/version-2.5.0-blue.svg)
 ![License](https://img.shields.io/badge/license-Enterprise-green.svg)
 ![Security](https://img.shields.io/badge/security-SOC2%20Certified-brightgreen.svg)
 ![Status](https://img.shields.io/badge/status-production-success.svg)
 
-**Enterprise-Grade VPN Solution for Modern Businesses**
+**Complete Enterprise-Grade VPN Platform**
 
-NetworkNiceIT Tec VPN Enterprise Edition is a robust, scalable, and secure VPN platform designed for organizations that demand the highest levels of security, performance, and reliability. Built with cutting-edge technology and enterprise-grade infrastructure, our solution provides seamless connectivity across global networks.
+A production-ready, full-stack VPN enterprise platform with microservices architecture, mobile and desktop applications, comprehensive infrastructure automation, and enterprise security features.
+
+## 🎯 Overview
+
+NNIT VPN Enterprise is a complete VPN solution built for modern businesses. This repository contains everything needed to deploy and run a production VPN service:
+
+- ✅ **6 Backend Microservices** - Auth, API, Admin, Billing, VPN Core, Monitoring
+- ✅ **4 Frontend Applications** - Mobile (React Native), Desktop (Electron), Admin Dashboard, User Portal
+- ✅ **Complete Infrastructure** - Docker, Kubernetes, Terraform, CI/CD
+- ✅ **VPN Server Setup** - WireGuard and OpenVPN installation scripts
+- ✅ **Enterprise Security** - MFA, JWT, encryption, audit logging
+- ✅ **Comprehensive Documentation** - Architecture, API, deployment guides
 
 ---
 
 ## 🚀 Quick Start
 
+### Development Environment
+
 ```bash
 # Clone the repository
 git clone https://github.com/networkniceit/nnit-vpn-enterprise.git
-
-# Navigate to the project directory
 cd nnit-vpn-enterprise
 
 # Install dependencies
@@ -25,36 +36,259 @@ npm install
 
 # Configure environment
 cp .env.example .env
+# Edit .env with your configuration
 
-# Start the development server
-npm run dev
+# Start development environment with Docker
+npm run docker:dev
 
-# Build for production
-npm run build
-
-# Deploy to production
-npm run deploy
+# Or start services individually
+npm run dev:auth    # Port 3001
+npm run dev:api     # Port 3002
+npm run dev:admin   # Port 3003
 ```
+
+### Access Services
+
+- **API Documentation**: http://localhost:3002/api-docs
+- **Auth Service**: http://localhost:3001
+- **Admin Dashboard**: http://localhost:3003
+- **Prometheus**: http://localhost:9090
+- **Grafana**: http://localhost:3000
+
+## 📦 What's Included
+
+This repository contains a complete, production-ready VPN platform:
+
+### Backend Services (Node.js + TypeScript)
+- **Authentication Service** - Firebase Auth, JWT, MFA (TOTP/SMS)
+- **API Service** - REST API with PostgreSQL, Redis, Swagger docs
+- **Admin Service** - User/server management, analytics, RBAC
+- **Billing Service** - Stripe integration, subscriptions, invoices
+- **VPN Core Service** - WireGuard/OpenVPN config generation
+- **Monitoring Service** - Prometheus metrics, health checks
+
+### Frontend Applications
+- **Mobile App** - React Native (iOS/Android) with biometric auth
+- **Desktop App** - Electron (Windows/Mac/Linux) with system tray
+- **Admin Dashboard** - React web app with Material-UI
+- **User Portal** - React web app for account management
+
+### Infrastructure & DevOps
+- **Docker** - Complete development environment
+- **Kubernetes** - Production deployments with auto-scaling
+- **Terraform** - AWS infrastructure as code
+- **GitHub Actions** - CI/CD pipeline with security scanning
+
+### VPN Servers
+- **WireGuard** - Installation and client setup scripts
+- **OpenVPN** - Installation and certificate management
+
+### Testing & Documentation
+- **Unit Tests** - Jest test suites for all services
+- **Integration Tests** - API endpoint testing
+- **Documentation** - Architecture, API, deployment guides
+- **Security** - Best practices and compliance guides
 
 ---
 
 ## 📋 Table of Contents
 
+- [What's Included](#-whats-included)
 - [Features](#-enterprise-features)
 - [Project Structure](#-project-structure)
-- [System Requirements](#-system-requirements)
 - [Installation](#-installation)
-- [Configuration](#-configuration)
-- [Deployment](#-deployment-guides)
-- [Security](#-security-certifications)
-- [Server Locations](#-global-server-locations)
-- [Subscription Plans](#-subscription-plans)
-- [API Documentation](#-api-documentation)
-- [Support](#-support--resources)
+- [Documentation](#-documentation)
+- [Testing](#-testing)
+- [Deployment](#-deployment)
 - [Contributing](#-contributing)
 - [License](#-license)
 
 ---
+
+## 📁 Project Structure
+
+```
+nnit-vpn-enterprise/
+├── backend/                    # Backend microservices
+│   ├── auth/                  # Authentication service (Port 3001)
+│   ├── api/                   # Main API service (Port 3002)
+│   ├── admin/                 # Admin service (Port 3003)
+│   ├── billing/               # Billing service (Port 3004)
+│   ├── vpn-core/              # VPN core service (Port 3005)
+│   └── monitoring/            # Monitoring service (Port 3006)
+├── apps/                      # Frontend applications
+│   ├── mobile/                # React Native mobile app
+│   ├── desktop/               # Electron desktop app
+│   ├── admin-dashboard/       # Admin web dashboard (React)
+│   └── user-portal/           # User portal (React)
+├── infrastructure/            # Infrastructure as Code
+│   ├── docker/                # Docker Compose configs
+│   ├── k8s/                   # Kubernetes manifests
+│   ├── terraform/             # Terraform AWS configs
+│   └── ci-cd/                 # CI/CD configurations
+├── vpn-servers/               # VPN server setup scripts
+│   ├── wireguard/             # WireGuard installation
+│   └── openvpn/               # OpenVPN installation
+├── tests/                     # Test suites
+│   ├── unit/                  # Unit tests
+│   ├── integration/           # Integration tests
+│   └── e2e/                   # End-to-end tests
+├── docs/                      # Documentation
+│   ├── ARCHITECTURE.md        # System architecture
+│   ├── DEVELOPMENT.md         # Development guide
+│   ├── API.md                 # API documentation
+│   ├── DEPLOYMENT.md          # Deployment guide
+│   └── SECURITY_PRACTICES.md  # Security guide
+├── .github/workflows/         # GitHub Actions
+├── package.json               # Root package.json
+├── tsconfig.json              # TypeScript config
+└── .env.example               # Environment template
+```
+
+---
+
+## 🛠️ Installation
+
+### Prerequisites
+
+- **Node.js** 18+ and npm 9+
+- **Docker** and Docker Compose (for development)
+- **PostgreSQL** 16 (or use Docker)
+- **Redis** 7 (or use Docker)
+- **Git**
+
+### Step-by-Step Setup
+
+1. **Clone the repository**
+   ```bash
+   git clone https://github.com/networkniceit/nnit-vpn-enterprise.git
+   cd nnit-vpn-enterprise
+   ```
+
+2. **Install dependencies**
+   ```bash
+   npm install
+   ```
+
+3. **Configure environment**
+   ```bash
+   cp .env.example .env
+   # Edit .env with your settings
+   ```
+
+4. **Start with Docker (Recommended)**
+   ```bash
+   npm run docker:dev
+   ```
+   
+   This starts all services:
+   - All 6 backend services
+   - PostgreSQL database
+   - Redis cache
+   - Prometheus & Grafana
+   - Nginx reverse proxy
+
+5. **Run database migrations**
+   ```bash
+   npm run db:migrate
+   ```
+
+6. **Verify installation**
+   ```bash
+   curl http://localhost:3001/health  # Auth Service
+   curl http://localhost:3002/health  # API Service
+   ```
+
+For detailed setup instructions, see [docs/DEVELOPMENT.md](./docs/DEVELOPMENT.md)
+
+---
+
+## 📚 Documentation
+
+Comprehensive documentation is available in the `/docs` directory:
+
+- **[ARCHITECTURE.md](./docs/ARCHITECTURE.md)** - System architecture and design
+- **[DEVELOPMENT.md](./docs/DEVELOPMENT.md)** - Development setup and workflow
+- **[API.md](./docs/API.md)** - Complete API reference
+- **[DEPLOYMENT.md](./docs/DEPLOYMENT.md)** - Production deployment guide
+- **[SECURITY_PRACTICES.md](./docs/SECURITY_PRACTICES.md)** - Security best practices
+
+### Interactive API Documentation
+
+Once services are running, access Swagger UI:
+```
+http://localhost:3002/api-docs
+```
+
+---
+
+## 🧪 Testing
+
+```bash
+# Run all tests
+npm test
+
+# Run unit tests
+npm run test:unit
+
+# Run integration tests
+npm run test:integration
+
+# Run with coverage
+npm test -- --coverage
+
+# Watch mode
+npm run test:watch
+```
+
+### Code Quality
+
+```bash
+# Lint code
+npm run lint
+
+# Fix linting issues
+npm run lint:fix
+
+# Format code
+npm run format
+
+# Type checking
+npm run typecheck
+```
+
+---
+
+## 🚀 Deployment
+
+### Docker Deployment
+
+```bash
+# Production Docker Compose
+docker-compose -f infrastructure/docker/docker-compose.prod.yml up -d
+```
+
+### Kubernetes Deployment
+
+```bash
+# Apply Kubernetes manifests
+kubectl apply -f infrastructure/k8s/
+
+# Check deployment status
+kubectl get pods
+kubectl get services
+```
+
+### Terraform (AWS)
+
+```bash
+cd infrastructure/terraform
+terraform init
+terraform plan
+terraform apply
+```
+
+For detailed deployment instructions, see [docs/DEPLOYMENT.md](./docs/DEPLOYMENT.md)
 
 ## ✨ Enterprise Features
 
@@ -100,18 +334,84 @@ npm run deploy
 
 ---
 
-## 📁 Project Structure
+## 🤝 Contributing
 
-```
-nnit-vpn-enterprise/
-├── src/
-│   ├── client/                 # Client applications
-│   │   ├── desktop/           # Desktop clients (Windows, macOS, Linux)
-│   │   ├── mobile/            # Mobile apps (iOS, Android)
-│   │   └── browser/           # Browser extensions
-│   ├── server/                # Server-side components
-│   │   ├── api/               # REST API services
-│   │   ├── auth/              # Authentication services
+We welcome contributions! Please see [CONTRIBUTING.md](./CONTRIBUTING.md) for guidelines.
+
+### Quick Contribution Guide
+
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)
+3. Make your changes
+4. Run tests (`npm test`)
+5. Commit (`git commit -m 'feat: add amazing feature'`)
+6. Push (`git push origin feature/amazing-feature`)
+7. Open a Pull Request
+
+---
+
+## 📄 License
+
+This project is licensed under an Enterprise License. See [LICENSE](./LICENSE) for details.
+
+---
+
+## 🌟 Support
+
+### Documentation
+- [Architecture Guide](./docs/ARCHITECTURE.md)
+- [Development Guide](./docs/DEVELOPMENT.md)
+- [API Reference](./docs/API.md)
+- [Deployment Guide](./docs/DEPLOYMENT.md)
+- [Security Practices](./docs/SECURITY_PRACTICES.md)
+
+### Community
+- **Issues**: [GitHub Issues](https://github.com/networkniceit/nnit-vpn-enterprise/issues)
+- **Discussions**: [GitHub Discussions](https://github.com/networkniceit/nnit-vpn-enterprise/discussions)
+- **Email**: support@nnitvpn.com
+
+### Commercial Support
+For enterprise support, custom development, or consulting:
+- **Email**: enterprise@nnitvpn.com
+- **Website**: https://nnitvpn.com
+
+---
+
+## 🙏 Acknowledgments
+
+Built with:
+- [Node.js](https://nodejs.org/) - JavaScript runtime
+- [React](https://reactjs.org/) & [React Native](https://reactnative.dev/) - UI frameworks
+- [Electron](https://www.electronjs.org/) - Desktop applications
+- [Express.js](https://expressjs.com/) - Web framework
+- [PostgreSQL](https://www.postgresql.org/) - Database
+- [Redis](https://redis.io/) - Caching
+- [Stripe](https://stripe.com/) - Payments
+- [Firebase](https://firebase.google.com/) - Authentication
+- [WireGuard](https://www.wireguard.com/) & [OpenVPN](https://openvpn.net/) - VPN protocols
+- [Kubernetes](https://kubernetes.io/) - Container orchestration
+- [Terraform](https://www.terraform.io/) - Infrastructure as Code
+
+---
+
+## 📊 Project Status
+
+- ✅ Backend Services: Complete
+- ✅ Frontend Applications: Complete
+- ✅ Infrastructure: Complete
+- ✅ Documentation: Complete
+- ✅ CI/CD Pipeline: Complete
+- ✅ VPN Server Scripts: Complete
+- ✅ Testing Suite: Complete
+
+**Current Version**: 2.5.0  
+**Status**: Production Ready
+
+---
+
+Made with ❤️ by [NetworkNiceIT](https://github.com/networkniceit)
+
+
 │   │   ├── vpn/               # VPN protocol handlers
 │   │   └── management/        # Admin management tools
 │   ├── core/                  # Core VPN engine
