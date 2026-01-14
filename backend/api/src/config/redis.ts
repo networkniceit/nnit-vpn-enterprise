@@ -1,0 +1,24 @@
+import Redis from 'ioredis';
+import { config } from './config';
+import { logger } from '../utils/logger';
+
+export const redis = new Redis({
+  host: config.redis.host,
+  port: config.redis.port,
+  password: config.redis.password,
+  db: config.redis.db,
+  retryStrategy: (times) => {
+    const delay = Math.min(times * 50, 2000);
+    return delay;
+  },
+});
+
+redis.on('connect', () => {
+  logger.info('Redis connection established successfully');
+});
+
+redis.on('error', (error) => {
+  logger.error('Redis connection error:', error);
+});
+
+export default redis;
