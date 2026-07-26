@@ -89,13 +89,12 @@ app.use((err, req, res, next) => {
 
 // Start server
 app.listen(PORT, () => {
-  console.log(`
-    ╔═══════════════════════════════════════════════╗
-    ║   NNIT VPN API Server                         ║
-    ║   Network Nice IT Tec (NNIT)                  ║
-    ╠═══════════════════════════════════════════════╣
-    ║   Port: ${PORT}                                 
-    ║   Environment: ${process.env.NODE_ENV || 'development'}
-    ║   Contact: networkniceit@gmail.com            ║
-    ╚═══════════════════════════════════════════════╝
-  `);
+  console.log('========================================');
+  console.log('   NNIT VPN API Server');
+  console.log('   Network Nice IT Tec (NNIT)');
+  console.log('========================================');
+  console.log(`   Port: ${PORT}`);
+  console.log(`   Environment: ${process.env.NODE_ENV || 'development'}`);
+  console.log('   Contact: networkniceit@gmail.com');
+  console.log('========================================');
+});
