@@ -1,4 +1,4 @@
-const express = require('express');
+﻿const express = require('express');
 const cors = require('cors');
 const helmet = require('helmet');
 const morgan = require('morgan');
@@ -10,18 +10,19 @@ const authRoutes = require('./routes/auth');
 const serverRoutes = require('./routes/servers');
 const sessionRoutes = require('./routes/sessions');
 const subscriptionRoutes = require('./routes/subscriptions');
+const adminRoutes = require('./routes/admin');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// Security middleware
 app.use(helmet());
 app.use(cors({
   origin: process.env.ALLOWED_ORIGINS?.split(',') || ['http://localhost:3001'],
   credentials: true
 }));
 
-// Rate limiting
+app.use('/api/admin', cors({ origin: true }));
+
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000,
   max: 100,
@@ -29,19 +30,16 @@ const limiter = rateLimit({
 });
 app.use('/api/', limiter);
 
-// Body parsing
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(compression());
 
-// Logging
 if (process.env.NODE_ENV !== 'production') {
   app.use(morgan('dev'));
 } else {
   app.use(morgan('combined'));
 }
 
-// Health check
 app.get('/health', (req, res) => {
   res.status(200).json({
     status: 'healthy',
@@ -51,7 +49,6 @@ app.get('/health', (req, res) => {
   });
 });
 
-// API info
 app.get('/api', (req, res) => {
   res.json({
     name: 'NetworkNiceIT Tec VPN API',
@@ -62,13 +59,12 @@ app.get('/api', (req, res) => {
   });
 });
 
-// Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/servers', serverRoutes);
 app.use('/api/sessions', sessionRoutes);
 app.use('/api/subscriptions', subscriptionRoutes);
+app.use('/api/admin', adminRoutes);
 
-// 404 handler
 app.use((req, res) => {
   res.status(404).json({
     error: 'Endpoint not found',
@@ -77,7 +73,6 @@ app.use((req, res) => {
   });
 });
 
-// Error handler
 app.use((err, req, res, next) => {
   console.error('Error:', err.stack);
   res.status(err.status || 500).json({
@@ -86,7 +81,6 @@ app.use((err, req, res, next) => {
   });
 });
 
-// Start server (after database is ready)
 async function start() {
   try {
     await initDb();
