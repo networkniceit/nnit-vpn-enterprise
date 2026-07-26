@@ -2,9 +2,7 @@ const express = require('express');
 const router = express.Router();
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
-
-// Simple in-memory user store (swap for a real database later)
-const users = new Map();
+const { pool } = require('../../db');
 
 // POST /api/auth/register
 router.post('/register', async (req, res) => {
@@ -14,21 +12,26 @@ router.post('/register', async (req, res) => {
     if (!email || !password) {
       return res.status(400).json({ success: false, error: 'Email and password are required' });
     }
-    if (users.has(email)) {
+
+    const existing = await pool.query('SELECT id FROM users WHERE email = $1', [email]);
+    if (existing.rows.length > 0) {
       return res.status(400).json({ success: false, error: 'User already exists' });
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
     const uid = 'user_' + Date.now();
 
-    users.set(email, { uid, email, name, password: hashedPassword });
+    await pool.query(
+      'INSERT INTO users (uid, email, name, password) VALUES ($1, $2, $3, $4)',
+      [uid, email, name, hashedPassword]
+    );
 
     const token = jwt.sign({ uid, email }, process.env.JWT_SECRET || 'dev-secret', { expiresIn: '7d' });
 
     res.status(201).json({
       success: true,
       user: { uid, email, name },
-      token
+      token,
     });
   } catch (error) {
     console.error('Registration error:', error);
@@ -40,7 +43,9 @@ router.post('/register', async (req, res) => {
 router.post('/login', async (req, res) => {
   try {
     const { email, password } = req.body;
-    const user = users.get(email);
+
+    const result = await pool.query('SELECT * FROM users WHERE email = $1', [email]);
+    const user = result.rows[0];
 
     if (!user || !(await bcrypt.compare(password, user.password))) {
       return res.status(401).json({ success: false, error: 'Invalid email or password' });
@@ -51,7 +56,7 @@ router.post('/login', async (req, res) => {
     res.json({
       success: true,
       token,
-      user: { uid: user.uid, email: user.email, name: user.name }
+      user: { uid: user.uid, email: user.email, name: user.name },
     });
   } catch (error) {
     console.error('Login error:', error);

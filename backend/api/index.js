@@ -5,7 +5,7 @@ const morgan = require('morgan');
 const compression = require('compression');
 const rateLimit = require('express-rate-limit');
 require('dotenv').config();
-
+const { initDb } = require('./db');
 const authRoutes = require('./routes/auth');
 const serverRoutes = require('./routes/servers');
 const sessionRoutes = require('./routes/sessions');
@@ -23,8 +23,8 @@ app.use(cors({
 
 // Rate limiting
 const limiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 100, // limit each IP to 100 requests per windowMs
+  windowMs: 15 * 60 * 1000,
+  max: 100,
   message: 'Too many requests from this IP, please try again later.'
 });
 app.use('/api/', limiter);
@@ -80,21 +80,31 @@ app.use((req, res) => {
 // Error handler
 app.use((err, req, res, next) => {
   console.error('Error:', err.stack);
-  
   res.status(err.status || 500).json({
     error: err.message || 'Internal server error',
     ...(process.env.NODE_ENV !== 'production' && { stack: err.stack })
   });
 });
 
-// Start server
-app.listen(PORT, () => {
-  console.log('========================================');
-  console.log('   NNIT VPN API Server');
-  console.log('   Network Nice IT Tec (NNIT)');
-  console.log('========================================');
-  console.log(`   Port: ${PORT}`);
-  console.log(`   Environment: ${process.env.NODE_ENV || 'development'}`);
-  console.log('   Contact: networkniceit@gmail.com');
-  console.log('========================================');
-});
+// Start server (after database is ready)
+async function start() {
+  try {
+    await initDb();
+  } catch (err) {
+    console.error('Database initialization failed:', err.message);
+    console.error('Server will continue, but auth routes may fail until DB is reachable.');
+  }
+
+  app.listen(PORT, () => {
+    console.log('========================================');
+    console.log('   NNIT VPN API Server');
+    console.log('   Network Nice IT Tec (NNIT)');
+    console.log('========================================');
+    console.log(`   Port: ${PORT}`);
+    console.log(`   Environment: ${process.env.NODE_ENV || 'development'}`);
+    console.log('   Contact: networkniceit@gmail.com');
+    console.log('========================================');
+  });
+}
+
+start();
