@@ -1,8 +1,8 @@
-const express = require('express');
+﻿const express = require('express');
 const router = express.Router();
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
-const { pool } = require('../../db');
+const { pool } = require('../db');
 
 // POST /api/auth/register
 router.post('/register', async (req, res) => {
