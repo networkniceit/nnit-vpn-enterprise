@@ -1,14 +1,13 @@
 const express = require('express');
 const router = express.Router();
 
-// Mock VPN servers data (replace with database in production)
 const vpnServers = [
   {
     id: 'us-east-1',
     name: 'United States East',
     country: 'US',
     city: 'New York',
-    flag: 'ðŸ‡ºðŸ‡¸',
+    flag: '\uD83C\uDDFA\uD83C\uDDF8',
     ip: '45.79.123.45',
     port: 51820,
     protocol: 'WireGuard',
@@ -23,7 +22,7 @@ const vpnServers = [
     name: 'United Kingdom',
     country: 'GB',
     city: 'London',
-    flag: 'ðŸ‡¬ðŸ‡§',
+    flag: '\uD83C\uDDEC\uD83C\uDDE7',
     ip: '78.141.220.91',
     port: 51820,
     protocol: 'WireGuard',
@@ -38,7 +37,7 @@ const vpnServers = [
     name: 'Singapore',
     country: 'SG',
     city: 'Singapore',
-    flag: 'ðŸ‡¸ðŸ‡¬',
+    flag: '\uD83C\uDDF8\uD83C\uDDEC',
     ip: '139.162.23.178',
     port: 51820,
     protocol: 'WireGuard',
@@ -53,7 +52,7 @@ const vpnServers = [
     name: 'Germany',
     country: 'DE',
     city: 'Frankfurt',
-    flag: 'ðŸ‡©ðŸ‡ª',
+    flag: '\uD83C\uDDE9\uD83C\uDDEA',
     ip: '172.105.77.200',
     port: 51820,
     protocol: 'WireGuard',
@@ -68,7 +67,7 @@ const vpnServers = [
     name: 'United States West',
     country: 'US',
     city: 'Los Angeles',
-    flag: 'ðŸ‡ºðŸ‡¸',
+    flag: '\uD83C\uDDFA\uD83C\uDDF8',
     ip: '173.255.244.88',
     port: 51820,
     protocol: 'OpenVPN',
@@ -83,7 +82,7 @@ const vpnServers = [
     name: 'Japan',
     country: 'JP',
     city: 'Tokyo',
-    flag: 'ðŸ‡¯ðŸ‡µ',
+    flag: '\uD83C\uDDEF\uD83C\uDDF5',
     ip: '172.232.45.123',
     port: 51820,
     protocol: 'WireGuard',
@@ -95,74 +94,30 @@ const vpnServers = [
   }
 ];
 
-// GET /api/servers - List all VPN servers
 router.get('/', (req, res) => {
-  res.json({
-    success: true,
-    count: vpnServers.length,
-    servers: vpnServers
-  });
+  res.json({ success: true, count: vpnServers.length, servers: vpnServers });
 });
 
-// GET /api/servers/fastest - Get fastest server
 router.get('/fastest', (req, res) => {
-  const fastestServer = vpnServers
-    .filter(s => s.status === 'online')
-    .sort((a, b) => a.latency - b.latency)[0];
-
-  res.json({
-    success: true,
-    server: fastestServer
-  });
+  const fastestServer = vpnServers.filter(s => s.status === 'online').sort((a, b) => a.latency - b.latency)[0];
+  res.json({ success: true, server: fastestServer });
 });
 
-// GET /api/servers/:id - Get specific server
 router.get('/:id', (req, res) => {
   const server = vpnServers.find(s => s.id === req.params.id);
-
-  if (!server) {
-    return res.status(404).json({
-      success: false,
-      error: 'Server not found'
-    });
-  }
-
-  res.json({
-    success: true,
-    server
-  });
+  if (!server) return res.status(404).json({ success: false, error: 'Server not found' });
+  res.json({ success: true, server });
 });
 
-// GET /api/servers/country/:country - Get servers by country
 router.get('/country/:country', (req, res) => {
-  const servers = vpnServers.filter(
-    s => s.country.toLowerCase() === req.params.country.toLowerCase()
-  );
-
-  res.json({
-    success: true,
-    count: servers.length,
-    servers
-  });
+  const servers = vpnServers.filter(s => s.country.toLowerCase() === req.params.country.toLowerCase());
+  res.json({ success: true, count: servers.length, servers });
 });
 
-// POST /api/servers/:id/connect - Connect to server
 router.post('/:id/connect', async (req, res) => {
   const server = vpnServers.find(s => s.id === req.params.id);
-
-  if (!server) {
-    return res.status(404).json({
-      success: false,
-      error: 'Server not found'
-    });
-  }
-
-  if (server.status !== 'online') {
-    return res.status(503).json({
-      success: false,
-      error: 'Server is currently offline'
-    });
-  }
+  if (!server) return res.status(404).json({ success: false, error: 'Server not found' });
+  if (server.status !== 'online') return res.status(503).json({ success: false, error: 'Server is currently offline' });
 
   const config = {
     serverId: server.id,
@@ -173,12 +128,7 @@ router.post('/:id/connect', async (req, res) => {
     allowedIPs: '0.0.0.0/0',
     dns: '1.1.1.1, 1.0.0.1'
   };
-
-  res.json({
-    success: true,
-    message: 'Connection configuration generated',
-    config
-  });
+  res.json({ success: true, message: 'Connection configuration generated', config });
 });
 
 module.exports = router;
