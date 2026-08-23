@@ -16,9 +16,20 @@ async function initDb() {
       email TEXT UNIQUE NOT NULL,
       name TEXT,
       password TEXT NOT NULL,
+      reset_token TEXT,
+      reset_token_expires TIMESTAMP,
+      plan TEXT DEFAULT 'free',
+      plan_updated_at TIMESTAMP,
       created_at TIMESTAMP DEFAULT NOW()
     );
   `);
+
+  // Safe no-ops if these already exist from a previous version of the table
+  await pool.query(`ALTER TABLE users ADD COLUMN IF NOT EXISTS reset_token TEXT;`);
+  await pool.query(`ALTER TABLE users ADD COLUMN IF NOT EXISTS reset_token_expires TIMESTAMP;`);
+  await pool.query(`ALTER TABLE users ADD COLUMN IF NOT EXISTS plan TEXT DEFAULT 'free';`);
+  await pool.query(`ALTER TABLE users ADD COLUMN IF NOT EXISTS plan_updated_at TIMESTAMP;`);
+
   console.log('Database ready: users table checked/created');
 }
 
